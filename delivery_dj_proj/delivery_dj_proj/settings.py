@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'cl=3cdt(1^w4e$y!7k8_011s3k58*(1l0p_gu-hd2b1%$4hi8e'
+SECRET_KEY = '1l2dr(8zf2z3_z%ixq8wrr9%do!l6t7&(*71$9a(7p!e1^fn(w'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,6 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'drivers',
+    'merchants',
+    'orders',
 ]
 
 MIDDLEWARE = [
@@ -76,10 +80,10 @@ WSGI_APPLICATION = 'delivery_dj_proj.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'delivery-app',
+        'NAME': 'delivery_app',
         'USER': 'devappuser',
         'PASSWORD': 'wecandoit-022',
-        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+        'HOST': '127.0.0.1',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
     }
 }

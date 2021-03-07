@@ -15,10 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
+from . import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('order/', include('orders.urls')),
-    path('merchant/', include('merchants.urls')),
-    path('driver/', include('drivers.urls'))
+    path('', views.receive_driver),
 ]
