@@ -1,5 +1,56 @@
 import 'package:flutter/material.dart';
 
+class DriverSignUp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 
 // Driver: full name, phone number, address.
 class DriverSignUp extends StatelessWidget {
@@ -145,3 +196,6 @@ class DriverSignUp extends StatelessWidget {
     );
   }
 }
+
+
+ */
