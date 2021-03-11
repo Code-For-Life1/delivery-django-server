@@ -2,7 +2,7 @@ import 'package:delivery_app/driver_signup.dart';
 import 'package:delivery_app/merchant_signup.dart';
 import 'package:delivery_app/welcome.dart';
 import 'package:flutter/material.dart';
-import 'package:delivery_app/merchant_order.dart';
+import 'package:delivery_app/merchant_page.dart';
 
 class Test extends StatefulWidget {
   @override
@@ -11,7 +11,7 @@ class Test extends StatefulWidget {
 
 class _TestState extends State<Test> {
   PageController _pageController = PageController();
-  List<Widget> _screens = [MyApp(), MerchantOrder(), MerchantSignUp()];
+  List<Widget> _screens = [MyApp(), MerchantPage(), MerchantSignUp()];
 
   int _selectedIndex = 0;
   void _onPageChanged(int index) {

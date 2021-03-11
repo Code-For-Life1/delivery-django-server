@@ -1,14 +1,27 @@
-import 'package:delivery_app/customWidgets/FancyButton.dart';
+import 'package:delivery_app/merchant_drivers.dart';
+import 'package:delivery_app/merchant_order.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class MerchantOrder2 extends StatefulWidget {
+class MerchantPage extends StatefulWidget {
   @override
-  _MerchantOrder2State createState() => _MerchantOrder2State();
+  _MerchantPageState createState() => _MerchantPageState();
 }
 
-class _MerchantOrder2State extends State<MerchantOrder2> {
+class _MerchantPageState extends State<MerchantPage> {
   int _currentIndex = 0;
+  PageController _pageController = PageController();
+  List<Widget> _screens = [MerchantOrder(), MerchantDrivers()];
+  int _selectedIndex = 0;
+  void _onPageChanged(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+  void _onItemTapped(int selectedIndex) {
+    _pageController.jumpToPage(selectedIndex);
+    _currentIndex = selectedIndex;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +36,12 @@ class _MerchantOrder2State extends State<MerchantOrder2> {
         ),
       ),
       backgroundColor: Colors.white,
-    /*  appBar: AppBar(
-        actions: [],
-        backgroundColor: Colors.orange[800],
-        title: Text(
-          'Delivery Status',
-        ),
-        centerTitle: true,
+
+      body: PageView(
+        controller: _pageController,
+        children: _screens,
+        onPageChanged: _onPageChanged,
+        physics: NeverScrollableScrollPhysics(),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
@@ -46,36 +58,8 @@ class _MerchantOrder2State extends State<MerchantOrder2> {
             label: 'Drivers',
           )
         ],
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
+      onTap: _onItemTapped,
         selectedItemColor: Colors.amber,
-      ),
-
-     */
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        //mainAxisSize: MainAxisSize.max,
-        //crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(),
-          Center(
-              child: Container(
-                margin: EdgeInsets.fromLTRB(0, 270, 0, 270),
-                child: Text(
-                  'No orders yet',
-                  style: TextStyle(fontSize: 40.0, color: Colors.orange[500]),
-                ),
-              )),
-          Container(
-            margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
-            child: FancyButton(
-              onPressed: () {},
-            ),
-          ),
-        ],
       ),
     );
   }

@@ -19,15 +19,20 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="792af8c6-7ea3-4f1a-852a-8fb644cf2f05" name="Default Changelist" comment="removed the code in main.dart, created a .dart file for every screen">
-      <change afterPath="$PROJECT_DIR$/delivery_app/lib/merchant_drivers.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/delivery_app/lib/merchant_page.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/delivery_app/lib/test.dart" afterDir="false" />
+    <list default="true" id="792af8c6-7ea3-4f1a-852a-8fb644cf2f05" name="Default Changelist" comment="added drivers list (without json)">
+      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/delivery_app/lib/driver_add.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/delivery_app/lib/customWidgets/FancyButton.dart" beforeDir="false" afterPath="$PROJECT_DIR$/delivery_app/lib/customWidgets/FancyButton.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/delivery_app/lib/driver_signup.dart" beforeDir="false" afterPath="$PROJECT_DIR$/delivery_app/lib/driver_signup.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/delivery_app/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/delivery_app/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/delivery_app/lib/merchant_drivers.dart" beforeDir="false" afterPath="$PROJECT_DIR$/delivery_app/lib/merchant_drivers.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/delivery_app/lib/merchant_order.dart" beforeDir="false" afterPath="$PROJECT_DIR$/delivery_app/lib/merchant_order.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/delivery_app/lib/merchant_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/delivery_app/lib/merchant_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/delivery_app/lib/merchant_signup.dart" beforeDir="false" afterPath="$PROJECT_DIR$/delivery_app/lib/merchant_signup.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/delivery_app/lib/test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/delivery_app/lib/test.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -134,7 +139,14 @@
       <option name="project" value="LOCAL" />
       <updated>1615389016782</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="added drivers list (without json)">
+      <created>1615424331587</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1615424331587</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -156,7 +168,8 @@
     <MESSAGE value="Created a custom Widget (Button)" />
     <MESSAGE value="Finished UI for Merchant order page" />
     <MESSAGE value="removed the code in main.dart, created a .dart file for every screen" />
-    <option name="LAST_COMMIT_MESSAGE" value="removed the code in main.dart, created a .dart file for every screen" />
+    <MESSAGE value="added drivers list (without json)" />
+    <option name="LAST_COMMIT_MESSAGE" value="added drivers list (without json)" />
   </component>
   <component name="WindowStateProjectService">
     <state x="196" y="106" key="#Unnamed" timestamp="1614902077076">
@@ -203,14 +216,18 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="446" y="179" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1615036810949" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1615389032795">
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1615424343572">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1615389032795" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1615424343572" />
     <state x="769" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1614898111116">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="769" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040@0.0.1920.1040" timestamp="1614898111116" />
+    <state x="730" y="233" key="git4idea.branch.GitSmartOperationDialog" timestamp="1615427999036">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="730" y="233" key="git4idea.branch.GitSmartOperationDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1615427999036" />
     <state x="228" y="232" width="672" height="678" key="search.everywhere.popup" timestamp="1615420322138">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

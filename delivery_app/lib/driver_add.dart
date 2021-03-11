@@ -1,8 +1,9 @@
-import 'package:delivery_app/merchant_page.dart';
 import 'package:flutter/material.dart';
 
-// Merchant: full name, phone number, company name, company address.
-class MerchantSignUp extends StatelessWidget {
+
+
+// Driver: full name, phone number, address.
+class DriverAdd extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double screenSize = MediaQuery.of(context).size.width;
@@ -24,9 +25,7 @@ class MerchantSignUp extends StatelessWidget {
         actions: [
           Center(
             child: FlatButton(
-              onPressed: () => {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>MerchantPage()))
-              },
+              onPressed: () => {},
               child: Text(
                 "Done",
                 style: TextStyle(
@@ -39,7 +38,7 @@ class MerchantSignUp extends StatelessWidget {
         ],
         automaticallyImplyLeading: false,
         title: Text(
-          "Sign up",
+          "Add Driver",
           style: TextStyle(color: Colors.white, fontSize: 23),
         ),
         centerTitle: true,
@@ -104,7 +103,7 @@ class MerchantSignUp extends StatelessWidget {
                               fillColor: Color(0xFFF8F8F8),
                               filled: true,
                               contentPadding: EdgeInsets.only(left: 15.0),
-                              hintText: 'Company name',
+                              hintText: 'Home address',
                               border: new OutlineInputBorder(
                                 borderRadius: const BorderRadius.all(
                                   const Radius.circular(10.0),
@@ -113,22 +112,6 @@ class MerchantSignUp extends StatelessWidget {
                             ),
                           ),
                         ),
-                        Container(
-                            width: screenSize * 0.85,
-                            child: TextField(
-                              style: TextStyle(fontSize: 22),
-                              decoration: new InputDecoration(
-                                fillColor: Color(0xFFF8F8F8),
-                                filled: true,
-                                contentPadding: EdgeInsets.only(left: 15.0),
-                                hintText: 'Company address',
-                                border: new OutlineInputBorder(
-                                  borderRadius: const BorderRadius.all(
-                                    const Radius.circular(10.0),
-                                  ),
-                                ),
-                              ),
-                            )),
                         Container(
                             width: screenSize * 0.85,
                             child: TextField(
@@ -149,17 +132,24 @@ class MerchantSignUp extends StatelessWidget {
                     )),
                 Container(
                   margin: EdgeInsets.only(
-                    top: screenSize * 0.35,
+                    top: screenSize * 0.5,
                   ),
-                  child: FlatButton(
-                      onPressed: () => {},
-                      child: Text(
-                        "Already have an account? Sign in",
-                        style: TextStyle(fontSize: 20, color: Color(0xFF8D8D8D)),
-                      )),
                 )
               ]))),
       backgroundColor: Color(0xFFF6F8F5),
     );
   }
 }
+
+
+/*
+class DriverSignUp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+
+    );
+  }
+}
+
+ */
