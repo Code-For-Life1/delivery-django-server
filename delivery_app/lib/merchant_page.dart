@@ -11,7 +11,7 @@ class MerchantPage extends StatefulWidget {
 class _MerchantPageState extends State<MerchantPage> {
   int _currentIndex = 0;
   PageController _pageController = PageController();
-  List<Widget> _screens = [MerchantOrder(), MerchantDrivers()];
+  List<Widget> _screens = [MerchantOrder(), MerchantDriversPage()];
   int _selectedIndex = 0;
   void _onPageChanged(int index) {
     setState(() {

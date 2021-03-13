@@ -1,13 +1,36 @@
 import 'package:delivery_app/driver_add.dart';
 import 'package:delivery_app/driver_signup.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import '';
 
-class MerchantDrivers extends StatefulWidget {
+
+class MerchantDriversPage extends StatefulWidget {
   @override
-  _MerchantDriversState createState() => _MerchantDriversState();
+  _MerchantDriversPageState createState() => _MerchantDriversPageState();
 }
 
-class _MerchantDriversState extends State<MerchantDrivers> {
+class _MerchantDriversPageState extends State<MerchantDriversPage> {
+
+  Future<List<MerchantDrivers>> _getDrivers() async {
+    //http://7bc54ac38e57.ngrok.io/mydrivers/31
+    var uri = Uri(
+      scheme: 'https',
+      host: '7bc54ac38e57.ngrok.io',
+      path: '/mydrivers/31',
+    );
+    var data = await http.get(uri);
+    var jsonData = json.decode(data.body);
+    List<MerchantDrivers> drivers = [];
+    for(var u in jsonData){
+      MerchantDrivers driver = MerchantDrivers(u["first_name"],u["last_name"],u["phone_number"]);
+      drivers.add(driver);
+    }
+    print(drivers.length);
+    return drivers;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,21 +47,44 @@ class _MerchantDriversState extends State<MerchantDrivers> {
          })
         ],
       ),
-      body: ListView.builder(
-        itemCount: 20,
-        itemBuilder: (context,index){
-          return Card(
-            color: Colors.amber,
-            child: Column(
-              children: [
-                Text('Driver${index+1}'),
-                Text('Name: Mahmoud'),
-                Text('Hello3')
-              ],
-            ),
-          );
-        }
+      body: Container(
+        child: FutureBuilder(
+          future: _getDrivers(),
+          builder: (BuildContext context, AsyncSnapshot snapshot){
+            if(snapshot.data == null){
+              return Container(
+                child: Center(child: Text("Loading...")),
+              );
+            }
+            else {
+              return ListView.builder(
+                itemCount: snapshot.data.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Card(
+                    color: Colors.orange,
+                    shadowColor: Colors.blue,
+                    child: ListTile(
+                      leading: Text(snapshot.data[index].lastName),
+                      title: Text(snapshot.data[index].firstName),
+                      subtitle: Text(snapshot.data[index].phoneNumber),
+                    ),
+                  );
+                },
+              );
+            }
+          },
+        ),
       )
     );
   }
+}
+
+
+class MerchantDrivers{
+  final String firstName;
+  final String lastName;
+  final String phoneNumber;
+
+  MerchantDrivers(this.firstName,this.lastName,this.phoneNumber);
+
 }

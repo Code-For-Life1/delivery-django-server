@@ -38,7 +38,7 @@ class _MerchantOrderState extends State<MerchantOrder> {
           SizedBox(),
           Center(
               child: Container(
-                margin: EdgeInsets.fromLTRB(0, 270, 0, 270),
+                margin: EdgeInsets.fromLTRB(0, 250, 0, 250),
                 child: Text(
                   'No orders yet',
                   style: TextStyle(fontSize: 40.0, color: Colors.orange[500]),

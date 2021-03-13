@@ -7,8 +7,6 @@ import 'package:delivery_app/welcome.dart';
 
 
 
-
-
 void main() => runApp(MaterialApp(
     home: MyApp(),debugShowCheckedModeBanner: false,
 ));

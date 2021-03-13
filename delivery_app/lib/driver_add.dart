@@ -1,9 +1,44 @@
 import 'package:flutter/material.dart';
-
+import 'models/driver_model.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 
 // Driver: full name, phone number, address.
-class DriverAdd extends StatelessWidget {
+class DriverAdd extends StatefulWidget {
+  @override
+  _DriverAddState createState() => _DriverAddState();
+}
+
+class _DriverAddState extends State<DriverAdd> {
+
+  Future<DriverModel> addDriver(String firstName,String lastName, String phoneNumber) async{
+    //http://7bc54ac38e57.ngrok.io/register/driver/31
+    var uri = Uri(
+      scheme: 'https',
+      host: '7bc54ac38e57.ngrok.io',
+      path: '/register/driver/31',
+    );
+    assert(
+    uri.toString() == 'https://7bc54ac38e57.ngrok.io/register/driver/31');
+
+    Map<String,String> a = {"first_name":firstName,"last_name":lastName,"phone_number":phoneNumber};
+    var b = json.encode(a);
+    print(b);
+    http.Response response = await http.post(uri,body: b,headers: {"content-type" :"application/json"});
+    final String responseString = response.body;
+    return driverModelFromJson(responseString);
+
+  }
+
+  DriverModel _driver;
+
+
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController phoneNumberController = TextEditingController();
+
+
   @override
   Widget build(BuildContext context) {
     double screenSize = MediaQuery.of(context).size.width;
@@ -25,7 +60,15 @@ class DriverAdd extends StatelessWidget {
         actions: [
           Center(
             child: FlatButton(
-              onPressed: () => {},
+              onPressed: () async {
+                final String firstName = firstNameController.text;
+                final String lastName = lastNameController.text;
+                final String phoneNumber = phoneNumberController.text;
+                final DriverModel newDriver = await addDriver(firstName, lastName, phoneNumber);
+                setState(() {
+                  _driver = newDriver;
+                });
+              },
               child: Text(
                 "Done",
                 style: TextStyle(
@@ -64,6 +107,7 @@ class DriverAdd extends StatelessWidget {
                         Container(
                           width: screenSize * 0.4,
                           child: TextField(
+                            controller: firstNameController,
                             style: TextStyle(fontSize: 22),
                             decoration: new InputDecoration(
                               fillColor: Color(0xFFF8F8F8),
@@ -81,6 +125,7 @@ class DriverAdd extends StatelessWidget {
                         Container(
                           width: screenSize * 0.4,
                           child: TextField(
+                            controller: lastNameController,
                             style: TextStyle(fontSize: 22),
                             decoration: new InputDecoration(
                               fillColor: Color(0xFFF8F8F8),
@@ -95,26 +140,27 @@ class DriverAdd extends StatelessWidget {
                             ),
                           ),
                         ),
-                        Container(
-                          width: screenSize * 0.85,
-                          child: TextField(
-                            style: TextStyle(fontSize: 22),
-                            decoration: new InputDecoration(
-                              fillColor: Color(0xFFF8F8F8),
-                              filled: true,
-                              contentPadding: EdgeInsets.only(left: 15.0),
-                              hintText: 'Home address',
-                              border: new OutlineInputBorder(
-                                borderRadius: const BorderRadius.all(
-                                  const Radius.circular(10.0),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
+                        // Container(
+                        //   width: screenSize * 0.85,
+                        //   child: TextField(
+                        //     style: TextStyle(fontSize: 22),
+                        //     decoration: new InputDecoration(
+                        //       fillColor: Color(0xFFF8F8F8),
+                        //       filled: true,
+                        //       contentPadding: EdgeInsets.only(left: 15.0),
+                        //       hintText: 'Home address',
+                        //       border: new OutlineInputBorder(
+                        //         borderRadius: const BorderRadius.all(
+                        //           const Radius.circular(10.0),
+                        //         ),
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
                         Container(
                             width: screenSize * 0.85,
                             child: TextField(
+                              controller: phoneNumberController,
                               style: TextStyle(fontSize: 22),
                               decoration: new InputDecoration(
                                 fillColor: Color(0xFFF8F8F8),
@@ -140,16 +186,3 @@ class DriverAdd extends StatelessWidget {
     );
   }
 }
-
-
-/*
-class DriverSignUp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-
-    );
-  }
-}
-
- */
