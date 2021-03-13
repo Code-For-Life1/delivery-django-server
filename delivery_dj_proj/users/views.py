@@ -10,6 +10,8 @@ from .serializers import MerchantSerializer, DriverSerializer
 from .models import Merchant, Token,Driver
 import uuid,json
 from django.http import JsonResponse
+from django.utils.crypto import get_random_string
+
 
 # Create your views here.
 @api_view(['POST'])
@@ -24,13 +26,15 @@ def register_merchant(request):
 @api_view(['POST'])
 def register_driver(request,merch_id):
     if request.method == 'POST':
-        serializer = DriverSerializer(data=request.data)
+        request.data['username'] = request.data['phone_number']
+        request.data['password'] = get_random_string(8)
+        driver_serializer = DriverSerializer(data=request.data)
         merchant = Merchant.objects.get(pk=merch_id)
-        if serializer.is_valid():
-            driver = serializer.save(merchant)
+        if driver_serializer.is_valid():
+            driver = driver_serializer.save(merchant)
             Token.objects.create(merchant=merchant,driver=driver)
             return Response("Done")
-        return Response(serializer.errors)
+        return Response(driver_serializer.errors)
 
 @api_view(['POST'])
 def authenticate_driver(request):

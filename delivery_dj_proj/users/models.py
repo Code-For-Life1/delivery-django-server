@@ -29,8 +29,8 @@ class Driver(models.Model):
 
 class Token(models.Model):
     token = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    merchant = models.OneToOneField(Merchant, on_delete=models.CASCADE)
-    driver = models.OneToOneField(Driver, on_delete=models.CASCADE)
+    merchant = models.ForeignKey(Merchant, on_delete=models.CASCADE)
+    driver = models.ForeignKey(Driver, on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.token)
