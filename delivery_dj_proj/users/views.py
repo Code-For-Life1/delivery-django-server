@@ -17,17 +17,17 @@ from django.utils.crypto import get_random_string
 @api_view(['POST'])
 def register_merchant(request):
     if request.method == 'POST':
-        serializer = MerchantSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
+        merchant = MerchantSerializer(data=request.data)
+        if merchant.is_valid():
+            merchant.save()
             return Response("Done")
-        return Response(serializer.errors)
+        return Response(merchant.errors)
 
 @api_view(['POST'])
 def register_driver(request,merch_id):
     if request.method == 'POST':
         request.data['username'] = request.data['phone_number']
-        request.data['password'] = get_random_string(8)
+        request.data['password'] = et_random_string(8g)
         driver_serializer = DriverSerializer(data=request.data)
         merchant = Merchant.objects.get(pk=merch_id)
         if driver_serializer.is_valid():
