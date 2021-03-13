@@ -27,7 +27,7 @@ def register_merchant(request):
 def register_driver(request,merch_id):
     if request.method == 'POST':
         request.data['username'] = request.data['phone_number']
-        request.data['password'] = et_random_string(8g)
+        request.data['password'] = get_random_string(8)
         driver_serializer = DriverSerializer(data=request.data)
         merchant = Merchant.objects.get(pk=merch_id)
         if driver_serializer.is_valid():
@@ -40,12 +40,12 @@ def register_driver(request,merch_id):
 def authenticate_driver(request):
     if request.method == 'POST':
         driv_token = request.data['token']
-        token = uuid.UUID(driv_token)
         try:
-            token = Token.objects.get(pk=token)
+            token = uuid.UUID(driv_token)
+            checked_token = Token.objects.get(pk=token)
         except:
             return Response("Invalid Token")
-        driver = token.driver
+        driver = checked_token.driver
         driver.is_auth = True
         driver.save()
         return Response("Done")
