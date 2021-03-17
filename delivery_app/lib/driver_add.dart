@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'models/driver_model.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
+import 'package:delivery_app/url_link.dart';
 
 // Driver: full name, phone number, address.
 class DriverAdd extends StatefulWidget {
@@ -13,14 +13,14 @@ class DriverAdd extends StatefulWidget {
 class _DriverAddState extends State<DriverAdd> {
 
   Future<DriverModel> addDriver(String firstName,String lastName, String phoneNumber) async{
-    //http://7bc54ac38e57.ngrok.io/register/driver/31
+    //http://a84a794b3db6.ngrok.io/
     var uri = Uri(
       scheme: 'https',
-      host: '7bc54ac38e57.ngrok.io',
-      path: '/register/driver/31',
+      host: theLink,
+      path: '/register/driver/39',
     );
     assert(
-    uri.toString() == 'https://7bc54ac38e57.ngrok.io/register/driver/31');
+    uri.toString() == 'https://a84a794b3db6.ngrok.io/register/driver/39');
 
     Map<String,String> a = {"first_name":firstName,"last_name":lastName,"phone_number":phoneNumber};
     var b = json.encode(a);

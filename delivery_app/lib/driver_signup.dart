@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'models/driver_authentication.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:delivery_app/url_link.dart';
 
 class DriverSignUp extends StatefulWidget {
   @override
@@ -16,11 +17,11 @@ class _DriverSignUpState extends State<DriverSignUp> {
     //http://7bc54ac38e57.ngrok.io/register/auth_driver
     var uri = Uri(
         scheme: 'https',
-        host: '7bc54ac38e57.ngrok.io',
+        host: theLink,
         path: '/register/auth_driver',
     );
-    assert(
-    uri.toString() == 'https://7bc54ac38e57.ngrok.io/register/auth_driver');
+    assert(//http://f60fc987a44e.ngrok.io/
+    uri.toString() == 'https://a84a794b3db6.ngrok.io/register/auth_driver');
     Map<String,String> a = {"token":token};
     var b = json.encode(a);
     print(b);
