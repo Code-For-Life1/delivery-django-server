@@ -8,7 +8,7 @@ import io
 from rest_framework.parsers import JSONParser
 from .serializers import MerchantSerializer, DriverSerializer
 from .models import Merchant, Token,Driver
-import uuid,json
+import uuid
 from django.http import JsonResponse
 from django.utils.crypto import get_random_string
 
@@ -55,5 +55,5 @@ def send_drivers(request,merch_id):
     if request.method == 'GET':
         drivers = Merchant.objects.get(pk=merch_id).driver_set.filter(is_auth=True)
         dictionaries = [driver.as_dict() for driver in drivers]
-        jsonfile = json.dumps(dictionaries)
         return JsonResponse(dictionaries,safe=False)
+
