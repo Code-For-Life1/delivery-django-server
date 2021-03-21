@@ -14,6 +14,7 @@ class Order(models.Model):
     receiver_full_name = models.CharField(max_length=60)
     receiver_phone_number = models.CharField(max_length=20)
     is_done = models.BooleanField(default=False)
+    is_recieved = models.BooleanField(default=False) #by driver
 
     def as_dict(self):
         return {

@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from .models import Order
-from users.models import Driver
+from users.models import Driver,Merchant
 from rest_framework.decorators import api_view
+from .serializers import OrderSerializer
+from rest_framework.response import Response
 # Create your views here.
 
 
@@ -12,3 +14,13 @@ def send_orders(request,driver_id):
         orders = Driver.objects.get(pk=driver_id).order_set.filter(is_done=False)
         dictionaries = [order.as_dict() for order in orders]
         return JsonResponse(dictionaries,safe=False)        
+
+
+@api_view(['POST'])
+def receive_order(request):
+    data = request.data
+    order_serializer = OrderSerializer(data=data)
+    if order_serializer.is_valid():
+        driver = order_serializer.save()
+        return Response("Done")
+    return Response(order_serializer.errors)

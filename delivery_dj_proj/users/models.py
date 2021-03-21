@@ -21,6 +21,7 @@ class Driver(models.Model):
 
     def as_dict(self):
         return {
+            'id' : self.user.id,
             'first_name': self.user.first_name,
             'last_name' : self.user.last_name,
             'phone_number' : self.user.phone_number

@@ -21,7 +21,7 @@ class DriverSerializer(serializers.ModelSerializer):
     def save(self, merchant,**kwargs):
         user = super().save()
         user.is_driver = True
-        driver = Driver.objects.create(user=user)
         user.save()
+        driver = Driver.objects.create(user=user)
         driver.merchant.add(merchant)
         return driver
