@@ -24,3 +24,11 @@ def receive_order(request):
         driver = order_serializer.save()
         return Response("Done")
     return Response(order_serializer.errors)
+
+
+@api_view(['PUT'])
+def order_is_done(request, order_id):
+    if Order.objects.filter(pk=order_id).exists():
+        Order.objects.filter(pk=order_id).update(is_done=True)
+        return Response("Done")
+    return Response("Invalid Order")
