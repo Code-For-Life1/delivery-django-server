@@ -86,11 +86,23 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'delivery_app',
-        'USER': 'devappuser',
+        'USER': 'root',
         'PASSWORD': 'wecandoit-022',
         'HOST': '127.0.0.1',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
     }
+
+    # 'default': {
+    #     'ENGINE': 'sql_server.pyodbc',
+    #     'NAME': 'adventureworks',
+    #     'USER': 'mbdeir',
+    #     'PASSWORD': '!!Cmps253!!',
+    #     'HOST': 'cmps.database.windows.net',
+    #     'PORT': '',
+    #     'OPTIONS': {
+    #         'driver': 'ODBC Driver 17 for SQL Server',
+    #         'schema': 'proj-12-delivery-app',
+    # },
 }
 
 
