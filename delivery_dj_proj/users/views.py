@@ -1,26 +1,42 @@
-from django.shortcuts import render
-from rest_framework.response import Response
-from rest_framework.decorators import api_view, parser_classes
-from django.conf.urls import url, include
+import io
+import uuid
+
+from django.conf.urls import include, url
 from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
-import io
-from rest_framework.parsers import JSONParser
-from .serializers import MerchantSerializer, DriverSerializer
-from .models import Merchant, Token,Driver
-import uuid
 from django.http import JsonResponse
+from django.shortcuts import render
 from django.utils.crypto import get_random_string
+from rest_framework import status
+from rest_framework.decorators import api_view, parser_classes
+from rest_framework.parsers import JSONParser
+from rest_framework.response import Response
+
+from .models import Driver, Merchant, Token
+from .serializers import UserSerializer,MerchantSerializer
 
 
 # Create your views here.
 @api_view(['POST'])
 def register_merchant(request):
-    merchant = MerchantSerializer(data=request.data)
-    if merchant.is_valid():
-        merchant.save()
-        return Response("Done")
-    return Response(merchant.errors)
+    data = request.data
+    data['is_driver'] = False
+    data['is_merchant'] = True
+    user_serializer = UserSerializer(data=data)
+    merchant_serializer = MerchantSerializer(data=data)
+    if user_serializer.is_valid() and merchant_serializer.is_valid():
+       
+        user = user_serializer.save()
+        merchant_serializer.save(user)
+        
+        response = {}
+        response['response'] = 'successfully registered new user.'
+        response['phone_number'] = user.phone_number
+        response['id'] = user.id
+
+        return JsonResponse(response,safe=False,status=status.HTTP_201_CREATED)
+
+    return JsonResponse(user_serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 def register_driver(request,merch_id):
