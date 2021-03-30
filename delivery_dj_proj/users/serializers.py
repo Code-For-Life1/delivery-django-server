@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Merchant, Driver
+from .models import User, Merchant, Driver, UnauthDriver
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -44,19 +44,11 @@ class MerchantSerializer(serializers.ModelSerializer):
         return merchant
 
 
-# class DriverSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = User
-#         fields = ['username', 'password',
-#                   'first_name', 'last_name', 'phone_number']
+class UnauthDriverSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UnauthDriver
+        fields = ['first_name', 'last_name', 'phone_number', 'merchant']
 
-#     def save(self, merchant, **kwargs):
-#         user = super().save()
-#         user.is_driver = True
-#         user.save()
-#         driver = Driver.objects.create(user=user)
-#         driver.merchant.add(merchant)
-#         return driver
 
 
 

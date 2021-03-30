@@ -3,21 +3,25 @@ import uuid
 
 from django.conf.urls import include, url
 from django.core import serializers
-from django.core.serializers.json import DjangoJSONEncoder
 from django.http import JsonResponse
-from django.shortcuts import render
-from django.utils.crypto import get_random_string
 from rest_framework import status
-from rest_framework.decorators import api_view, parser_classes
-from rest_framework.parsers import JSONParser
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.authtoken.models import Token
+from rest_framework.decorators import (api_view, authentication_classes,
+                                       permission_classes)
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Driver, Merchant, Token
-from .serializers import UserSerializer,MerchantSerializer
+from .models import Driver, Merchant, UnauthDriver
+from .serializers import (MerchantSerializer, UnauthDriverSerializer,
+                          UserSerializer)
 
 
 # Create your views here.
+
 @api_view(['POST'])
+@authentication_classes([])
+@permission_classes([])
 def register_merchant(request):
     data = request.data
     data['is_driver'] = False
@@ -30,41 +34,104 @@ def register_merchant(request):
         merchant_serializer.save(user)
         
         response = {}
-        response['response'] = 'successfully registered new user.'
+        response['response'] = 'successfully registered new merchant.'
         response['phone_number'] = user.phone_number
         response['id'] = user.id
+        token = Token.objects.get(user=user).key
+        response['token'] = token
 
         return JsonResponse(response,safe=False,status=status.HTTP_201_CREATED)
 
     return JsonResponse(user_serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['POST'])
-def register_driver(request,merch_id):
-    request.data['username'] = request.data['phone_number']
-    request.data['password'] = get_random_string(8)
-    driver_serializer = DriverSerializer(data=request.data)
-    merchant = Merchant.objects.get(pk=merch_id)
-    if driver_serializer.is_valid():
-        driver = driver_serializer.save(merchant)
-        Token.objects.create(merchant=merchant,driver=driver)
-        return Response("Done")
-    return Response(driver_serializer.errors)
+
 
 @api_view(['POST'])
-def authenticate_driver(request):
-    driv_token = request.data['token']
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def register_driver(request):
+    data = request.data
+    data['merchant'] = request.user
+    driver_serializer = UnauthDriverSerializer(data=data)
+
+    if driver_serializer.is_valid():
+        unauth_driver = driver_serializer.save()
+
+        response = {}
+        response['first_name'] = unauth_driver.first_name
+        response['last_name'] = unauth_driver.last_name
+        response['phone_number'] = unauth_driver.phone_number
+
+        return JsonResponse(response,safe=False,status=status.HTTP_201_CREATED)
+        
+    return JsonResponse(driver_serializer.errors, safe=False, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+def is_valid_token(token): #helper function to use in checking the token and authenticating the driver
+    token = uuid.UUID(token)
+    unauth_driver = UnauthDriver.objects.get(pk=token)
+    return unauth_driver
+
+    
+
+@api_view(['POST'])
+@authentication_classes(())
+@permission_classes(())
+def check_token(request):
+    token = request.data['token']
     try:
-        token = uuid.UUID(driv_token)
-        checked_token = Token.objects.get(pk=token)
+        is_valid_token(token)
     except:
-        return Response("Invalid Token")
-    driver = checked_token.driver
-    driver.is_auth = True
-    driver.save()
-    return Response("Done")
+        return JsonResponse({"response": "Invalid Token"}, safe=False, status=status.HTTP_400_BAD_REQUEST)
+    return JsonResponse({"response": "Valid Token", "token" : token}, safe=False,status=status.HTTP_200_OK)
+
+
+
+@api_view(['POST'])
+@authentication_classes(())
+@permission_classes(())
+def authenticate_driver(request):
+    driver_token = request.data['token']
+    try:
+        unauth_driver = is_valid_token(driver_token)
+    except:
+        return JsonResponse({"response": "Invalid Token"}, safe=False, status=status.HTTP_400_BAD_REQUEST)
+    
+    unauth_driver_data = unauth_driver.as_dict()
+    data = {**unauth_driver_data, **request.data}
+    data['is_driver'] = True
+    data['is_merchant'] = False
+    user_serializer = UserSerializer(data=data)
+
+    if user_serializer.is_valid():
+       
+        user = user_serializer.save()
+        driver = Driver.objects.create(user=user)
+        driver.merchant.add(data['merchant'])
+        
+        response = {}
+        response['response'] = 'successfully registered new driver.'
+        response['first_name'] = unauth_driver.first_name
+        response['last_name'] = unauth_driver.last_name
+        response['phone_number'] = user.phone_number
+        
+        token = Token.objects.get(user=user).key #authentication Token
+        response['token'] = token
+
+        unauth_driver.delete()
+
+        return JsonResponse(response,safe=False,status=status.HTTP_201_CREATED)
+
+    return JsonResponse(user_serializer.errors, safe=False, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 @api_view(['GET'])
-def send_drivers(request,merch_id):
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def send_drivers(request):
+    merch_id = request.user.id
     drivers = Merchant.objects.get(pk=merch_id).driver_set.filter(is_auth=True)
     dictionaries = [driver.as_dict() for driver in drivers]
     return JsonResponse(dictionaries,safe=False)
