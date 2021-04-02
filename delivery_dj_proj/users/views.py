@@ -49,8 +49,9 @@ def register_merchant(request):
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
-def register_driver(request):
+def merchant_add_driver(request):
     data = request.data
+
     data['merchant'] = request.user
     driver_serializer = UnauthDriverSerializer(data=data)
 
@@ -132,7 +133,7 @@ def authenticate_driver(request):
 @permission_classes([IsAuthenticated])
 def send_drivers(request):
     merch_id = request.user.id
-    drivers = Merchant.objects.get(pk=merch_id).driver_set.filter(is_auth=True)
+    drivers = Merchant.objects.get(pk=merch_id).driver_set.all()
     dictionaries = [driver.as_dict() for driver in drivers]
     return JsonResponse(dictionaries,safe=False)
 
