@@ -3,6 +3,6 @@ from . import views
 
 urlpatterns = [
     path('register', views.register_merchant),
-    path('drivers/<int:merch_id>', views.send_drivers)
+    path('drivers', views.send_drivers)
 
 ]

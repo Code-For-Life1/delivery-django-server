@@ -2,6 +2,7 @@ from django.urls import path,include
 from . import views
 
 urlpatterns = [
-    path('register/<int:merch_id>', views.register_driver),
+    path('register', views.merchant_add_driver),
+    path('check_token', views.check_token),
     path('auth_driver', views.authenticate_driver),
 ]
