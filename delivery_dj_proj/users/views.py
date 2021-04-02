@@ -122,7 +122,7 @@ def authenticate_driver(request):
 
         unauth_driver.delete()
 
-        return JsonResponse(response,safe=False,status=status.HTTP_201_CREATED)
+        return JsonResponse(response,safe=False, status=status.HTTP_201_CREATED)
 
     return JsonResponse(user_serializer.errors, safe=False, status=status.HTTP_400_BAD_REQUEST)
 
@@ -132,8 +132,11 @@ def authenticate_driver(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def send_drivers(request):
+    if not request.user.is_merchant:
+        return JsonResponse({"response" : "The user is not a merchant"}, safe=False, status=status.HTTP_400_BAD_REQUEST)
+
     merch_id = request.user.id
-    drivers = Merchant.objects.get(pk=merch_id).driver_set.all()
+    drivers = Driver.objects.filter(merchant=merch_id)
     dictionaries = [driver.as_dict() for driver in drivers]
-    return JsonResponse(dictionaries,safe=False)
+    return JsonResponse(dictionaries,safe=False, status=status.HTTP_200_OK)
 
