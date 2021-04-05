@@ -7,7 +7,7 @@ from rest_framework.decorators import (api_view, authentication_classes,
                                        permission_classes)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from users.models import Driver, Merchant
+from users.models import User, Driver, Merchant
 
 from .models import Order
 from .serializers import OrderSerializer
@@ -38,6 +38,9 @@ def send_orders_merchant(request):
     return JsonResponse(dictionaries,safe=False, status=status.HTTP_200_OK)      
 
 
+def get_id_by_phone(phone_number):
+    return User.objects.get(phone_number=phone_number).id
+
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -47,8 +50,9 @@ def receive_order(request):
 
     merch_id = request.user.id
     data = request.data
-    print(merch_id)
     data['merchant'] = merch_id
+    phone_number = data['driver']
+    data['driver'] = get_id_by_phone(phone_number)
     order_serializer = OrderSerializer(data=data)
     if order_serializer.is_valid():
         order = order_serializer.save()

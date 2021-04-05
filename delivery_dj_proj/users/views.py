@@ -53,19 +53,20 @@ def merchant_add_driver(request):
     data = request.data
 
     data['merchant'] = request.user
-    driver_serializer = UnauthDriverSerializer(data=data)
+    unauthdriver_serializer = UnauthDriverSerializer(data=data)
 
-    if driver_serializer.is_valid():
-        unauth_driver = driver_serializer.save()
+    if unauthdriver_serializer.is_valid():
+        unauth_driver = unauthdriver_serializer.save()
 
         response = {}
+        response['response'] = "Driver successfully added."
         response['first_name'] = unauth_driver.first_name
         response['last_name'] = unauth_driver.last_name
         response['phone_number'] = unauth_driver.phone_number
 
         return JsonResponse(response,safe=False,status=status.HTTP_201_CREATED)
         
-    return JsonResponse(driver_serializer.errors, safe=False, status=status.HTTP_400_BAD_REQUEST)
+    return JsonResponse(unauthdriver_serializer.errors, safe=False, status=status.HTTP_400_BAD_REQUEST)
 
 
 
