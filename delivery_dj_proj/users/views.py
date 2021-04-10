@@ -36,7 +36,6 @@ def register_merchant(request):
         response = {}
         response['response'] = 'successfully registered new merchant.'
         response['phone_number'] = user.phone_number
-        response['id'] = user.id
         token = Token.objects.get(user=user).key
         response['token'] = token
 
@@ -140,4 +139,3 @@ def send_drivers(request):
     drivers = Driver.objects.filter(merchant=merch_id)
     dictionaries = [driver.as_dict() for driver in drivers]
     return JsonResponse(dictionaries,safe=False, status=status.HTTP_200_OK)
-
