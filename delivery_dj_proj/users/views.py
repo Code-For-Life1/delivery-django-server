@@ -36,7 +36,6 @@ def register_merchant(request):
         response = {}
         response['response'] = 'successfully registered new merchant.'
         response['phone_number'] = user.phone_number
-        response['id'] = user.id
         token = Token.objects.get(user=user).key
         response['token'] = token
 
@@ -53,19 +52,20 @@ def merchant_add_driver(request):
     data = request.data
 
     data['merchant'] = request.user
-    driver_serializer = UnauthDriverSerializer(data=data)
+    unauthdriver_serializer = UnauthDriverSerializer(data=data)
 
-    if driver_serializer.is_valid():
-        unauth_driver = driver_serializer.save()
+    if unauthdriver_serializer.is_valid():
+        unauth_driver = unauthdriver_serializer.save()
 
         response = {}
+        response['response'] = "Driver successfully added."
         response['first_name'] = unauth_driver.first_name
         response['last_name'] = unauth_driver.last_name
         response['phone_number'] = unauth_driver.phone_number
 
         return JsonResponse(response,safe=False,status=status.HTTP_201_CREATED)
         
-    return JsonResponse(driver_serializer.errors, safe=False, status=status.HTTP_400_BAD_REQUEST)
+    return JsonResponse(unauthdriver_serializer.errors, safe=False, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -139,4 +139,3 @@ def send_drivers(request):
     drivers = Driver.objects.filter(merchant=merch_id)
     dictionaries = [driver.as_dict() for driver in drivers]
     return JsonResponse(dictionaries,safe=False, status=status.HTTP_200_OK)
-

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Order
-from users.models import Driver, Merchant
+from users.models import User, Driver, Merchant
 
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,6 +11,8 @@ class OrderSerializer(serializers.ModelSerializer):
             'city', 'floor', 
             'merchant','driver'
             ]
+
+
     
 
 

@@ -27,15 +27,21 @@ class Merchant(models.Model):
     company_name = models.CharField(max_length=100,default='')
     company_address = models.CharField(max_length=100,default='')
 
+    def get_phone_number(self):
+        return self.user.phone_number
+
 
 
 class Driver(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     merchant = models.ManyToManyField(Merchant)
 
+    def get_phone_number(self):
+        return self.user.phone_number
+
+
     def as_dict(self):
         return {
-            'id' : self.user.id,
             'first_name': self.user.first_name,
             'last_name' : self.user.last_name,
             'phone_number' : self.user.phone_number
