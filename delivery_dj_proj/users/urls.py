@@ -1,10 +1,9 @@
-from django.urls import path,include
+from django.urls import path,include, re_path
 from . import views
-
-from rest_framework.authtoken.views import obtain_auth_token
+from .views import CustomAuthToken
 
 urlpatterns = [
     path('merchant/', include('users.merchant_urls')),
     path('driver/', include('users.driver_urls')),
-    path('login', obtain_auth_token), #This view is modified to return the id also
+    re_path(r'^login/(?P<usertype>(driver|merchant))$', CustomAuthToken.as_view()), 
 ]
