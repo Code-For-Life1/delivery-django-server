@@ -16,8 +16,28 @@ from .models import Driver, Merchant, UnauthDriver
 from .serializers import (MerchantSerializer, UnauthDriverSerializer,
                           UserSerializer)
 
+from rest_framework.authtoken.views import ObtainAuthToken
+
 
 # Create your views here.
+
+class CustomAuthToken(ObtainAuthToken):
+
+    def post(self, request, usertype,*args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        if user.is_driver==False and usertype=="driver":
+            return JsonResponse({"response" : "This user is not a driver"}, safe=False, status=status.HTTP_400_BAD_REQUEST)
+        if user.is_merchant==False and usertype=="merchant":
+            return JsonResponse({"response" : "This user is not a merchant"}, safe=False, status=status.HTTP_400_BAD_REQUEST)
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({'token': token.key})
+
+
+
+
+
 
 @api_view(['POST'])
 @authentication_classes([])
