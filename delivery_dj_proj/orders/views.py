@@ -18,24 +18,30 @@ from .serializers import OrderSerializer
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
-def send_orders_driver(request):
+def send_orders_driver(request, OrderStatus):
     if not request.user.is_driver:
         return JsonResponse({"response" : "The user is not a driver"}, safe=False, status=status.HTTP_400_BAD_REQUEST)
     driver_id = request.user.id
-    orders = Order.objects.filter(driver=driver_id, is_done=False)
+    is_done = False
+    if(OrderStatus=='completed'):
+         is_done = True
+    orders = Order.objects.filter(driver=driver_id, is_done=is_done)
     dictionaries = [order.as_dict() for order in orders]
     return JsonResponse(dictionaries,safe=False, status=status.HTTP_200_OK)        
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
-def send_orders_merchant(request):
+def send_orders_merchant(request, OrderStatus):
     if not request.user.is_merchant:
         return JsonResponse({"response" : "The user is not a merchant"}, safe=False, status=status.HTTP_400_BAD_REQUEST)
     merch_id = request.user.id
-    orders = Order.objects.filter(merchant=merch_id, is_done=False)
+    is_done = False
+    if OrderStatus=='completed':
+         is_done = True
+    orders = Order.objects.filter(merchant=merch_id, is_done=is_done)
     dictionaries = [order.as_dict() for order in orders]
-    return JsonResponse(dictionaries,safe=False, status=status.HTTP_200_OK)      
+    return JsonResponse(dictionaries,safe=False, status=status.HTTP_200_OK)
 
 
 def get_id_by_phone(phone_number):
