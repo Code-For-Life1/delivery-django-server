@@ -2,3 +2,4 @@
 **.__pycache__
 **.DS_Store
 **.vscode
+/delivery_dj_proj/delivery_dj_proj/ApiKeys.py

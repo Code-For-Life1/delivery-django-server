@@ -44,10 +44,12 @@ INSTALLED_APPS = [
     "fcm_django",
 ]
 
+from .ApiKeys import fcmApiKey
+
 FCM_DJANGO_SETTINGS = {
 
          # Your firebase API KEY
-        "FCM_SERVER_KEY": "AAAAF5EhMCA:APA91bFTVRB5hWmT0op_l7Z2pTxtj9dkPvlE3jVI1SEZsmVXow-_bgQcNtKjNWkINJsuWDRoLrvDCcMT9YC6P1ZmcCoQHhVU0vxgrZ9XxdlrqqLCLgd4_QLVdbd1Gu9F3TdJ6Z9fA34W	",
+        "FCM_SERVER_KEY": fcmApiKey,
          # true if you want to have only one active device per registered user at a time
          # default: False
         "ONE_DEVICE_PER_USER": True,
