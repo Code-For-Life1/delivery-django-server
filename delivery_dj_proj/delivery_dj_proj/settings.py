@@ -25,7 +25,7 @@ SECRET_KEY = '1l2dr(8zf2z3_z%ixq8wrr9%do!l6t7&(*71$9a(7p!e1^fn(w'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['7a2ad91f93bb.ngrok.io',  '127.0.0.1']
+ALLOWED_HOSTS = ['b7537faa8bb7.ngrok.io',  '127.0.0.1']
 
 
 # Application definition
@@ -41,7 +41,21 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'users',
     'orders',
+    "fcm_django",
 ]
+
+FCM_DJANGO_SETTINGS = {
+
+         # Your firebase API KEY
+        "FCM_SERVER_KEY": "AAAAF5EhMCA:APA91bFTVRB5hWmT0op_l7Z2pTxtj9dkPvlE3jVI1SEZsmVXow-_bgQcNtKjNWkINJsuWDRoLrvDCcMT9YC6P1ZmcCoQHhVU0vxgrZ9XxdlrqqLCLgd4_QLVdbd1Gu9F3TdJ6Z9fA34W	",
+         # true if you want to have only one active device per registered user at a time
+         # default: False
+        "ONE_DEVICE_PER_USER": True,
+         # devices to which notifications cannot be sent,
+         # are deleted upon receiving error response from FCM
+         # default: False
+        "DELETE_INACTIVE_DEVICES": False,
+}
 
 REST_FRAMEWORK = {
     'DEFAULT_PARSER_CLASSES': [
