@@ -1,4 +1,7 @@
 import uuid
+import math
+import random
+import json
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -47,10 +50,20 @@ class Driver(models.Model):
             'phone_number' : self.user.phone_number
         }
 
-
+def generateOTP() :
+  
+    # Declare a string variable  
+    # which stores all string 
+    string = '01234567890123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    OTP = ""
+    length = len(string)
+    for i in range(6) :
+        OTP += string[math.floor(random.random() * length)]
+  
+    return OTP
 
 class UnauthDriver(models.Model):
-    token = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    token = models.CharField(primary_key=True, default=generateOTP(), max_length=6, editable=False)
     merchant = models.ForeignKey(Merchant, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
@@ -66,6 +79,13 @@ class UnauthDriver(models.Model):
 
     def __str__(self):
         return str(self.token)
+
+    def toJSON(self):
+        return {
+            'first_name': self.first_name,
+            'last_name' : self.last_name,
+            'phone_number' : self.phone_number
+        }
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)

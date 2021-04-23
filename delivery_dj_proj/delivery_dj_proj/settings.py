@@ -44,12 +44,15 @@ INSTALLED_APPS = [
     "fcm_django",
 ]
 
-from .ApiKeys import fcmApiKey
+# FCM API key
+import environ
+env = environ.Env()
+environ.Env.read_env()
 
 FCM_DJANGO_SETTINGS = {
 
          # Your firebase API KEY
-        "FCM_SERVER_KEY": fcmApiKey,
+        "FCM_SERVER_KEY": env('fcmApiKey'),
          # true if you want to have only one active device per registered user at a time
          # default: False
         "ONE_DEVICE_PER_USER": True,
@@ -112,7 +115,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'delivery_app',
-        'USER': 'devappuser',
+        'USER': 'root',
         'PASSWORD': 'wecandoit-022',
         'HOST': '127.0.0.1',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',

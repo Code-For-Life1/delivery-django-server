@@ -1,5 +1,6 @@
 import io
 import uuid
+import environ
 
 from django.conf.urls import include, url
 from django.core import serializers
@@ -17,7 +18,13 @@ from .serializers import (MerchantSerializer, UnauthDriverSerializer,
                           UserSerializer)
 
 from rest_framework.authtoken.views import ObtainAuthToken
+from twilio.rest import Client
+from .models import generateOTP
 
+# Twilio authentication
+env = environ.Env()
+environ.Env.read_env()
+twilio_client = Client(env('TWILIO_ACCOUNT_SID'), env('TWILIO_AUTH_TOKEN'))
 
 # Create your views here.
 
@@ -63,6 +70,37 @@ def register_merchant(request):
 
     return JsonResponse(user_serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
+def sendSMS(unauth_driver): # helper function to send sms
+    message = twilio_client.messages \
+            .create(
+                body="\nHello " + unauth_driver.first_name + " " + unauth_driver.last_name + \
+                ", here is your sign up token: " + unauth_driver.token,
+                from_="+12244343836",
+                to="+961" + unauth_driver.phone_number
+            )
+
+def resendSMS(unauth_driver): # helper function to resend sms
+    newToken = generateOTP()
+    UnauthDriver.objects.filter(phone_number=unauth_driver.phone_number)\
+        .update(token=newToken)
+    unauth_driver.token = newToken
+    sendSMS(unauth_driver)
+
+def check_unauthdriver(phone_nb): # helper function to find if unauth driver exists
+    unauthdriver = UnauthDriver.objects.filter(phone_number=phone_nb)
+    dictionaries = [driver.as_dict() for driver in unauthdriver]
+    if len(dictionaries) == 1:
+        return unauthdriver
+    else:
+        return False        
+
+def check_authdriver(phone_nb): # helper function to find if auth driver exists
+    authdriver = User.objects.filter(phone_number=phone_nb, is_driver=1)
+    dictionaries = [driver.as_dict() for driver in authdriver]
+    if len(dictionaries) == 1:
+        return authdriver
+    else:
+        return False 
 
 
 @api_view(['POST'])
@@ -83,10 +121,24 @@ def merchant_add_driver(request):
         response['last_name'] = unauth_driver.last_name
         response['phone_number'] = unauth_driver.phone_number
 
+        sendSMS(unauth_driver)
+
         return JsonResponse(response,safe=False,status=status.HTTP_201_CREATED)
         
     return JsonResponse(unauthdriver_serializer.errors, safe=False, status=status.HTTP_400_BAD_REQUEST)
 
+
+@api_view(['POST'])
+@authentication_classes([])
+@permission_classes([])
+def resend_sms(request):
+    data = request.data
+    phone_nb = data['phone_number']
+    driver = check_unauthdriver(phone_nb)
+    if driver == False:
+        return JsonResponse({'response': 'Driver has not been added by merchant', 'phone_number': phone_nb}, safe=False, status=status.HTTP_400_BAD_REQUEST)
+    resendSMS(driver[0])
+    return JsonResponse({'response': 'SMS has been resent!', 'driver': driver.first().toJSON()}, safe=False, status=status.HTTP_200_OK)
 
 
 def is_valid_token(token): #helper function to use in checking the token and authenticating the driver
