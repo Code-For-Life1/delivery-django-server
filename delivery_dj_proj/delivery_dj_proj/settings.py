@@ -115,7 +115,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'delivery_app',
-        'USER': 'root',
+        'USER': 'devappuser',
         'PASSWORD': 'wecandoit-022',
         'HOST': '127.0.0.1',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',

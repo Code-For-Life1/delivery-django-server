@@ -142,7 +142,6 @@ def resend_sms(request):
 
 
 def is_valid_token(token): #helper function to use in checking the token and authenticating the driver
-    token = uuid.UUID(token)
     unauth_driver = UnauthDriver.objects.get(pk=token)
     return unauth_driver
 
