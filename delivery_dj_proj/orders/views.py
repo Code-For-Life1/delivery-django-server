@@ -8,6 +8,7 @@ from rest_framework.decorators import (api_view, authentication_classes,
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from users.models import User, Driver, Merchant
+from users.helpers import get_user_by_phone
 
 from .models import Order
 from .serializers import OrderSerializer
@@ -46,8 +47,7 @@ def send_orders_merchant(request, OrderStatus):
     return JsonResponse(dictionaries,safe=False, status=status.HTTP_200_OK)
 
 
-def get_user_by_phone(phone_number):
-    return User.objects.get(phone_number=phone_number)
+
 
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
