@@ -51,7 +51,7 @@ social-auth-app-django==4.0.0
 social-auth-core
 sqlparse
 toml==0.10.1
-twilio==6.57.0
+twilio
 Twisted==21.2.0
 txaio==21.2.1
 uritemplate==3.0.1
