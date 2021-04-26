@@ -26,9 +26,8 @@ def resendSMS(unauth_driver): # helper function to resend sms
 
 def check_unauthdriver(phone_nb): # helper function to find if unauth driver exists
     unauthdriver = UnauthDriver.objects.filter(phone_number=phone_nb)
-    dictionaries = [driver.as_dict() for driver in unauthdriver]
-    if len(dictionaries) == 1:
-        return unauthdriver
+    if unauthdriver.exists():
+        return True
     else:
         return False        
 
@@ -36,9 +35,8 @@ def check_unauthdriver(phone_nb): # helper function to find if unauth driver exi
 
 def check_authdriver(phone_nb): # helper function to find if auth driver exists
     authdriver = User.objects.filter(phone_number=phone_nb, is_driver=1)
-    dictionaries = [driver.as_dict() for driver in authdriver]
-    if len(dictionaries) == 1:
-        return authdriver
+    if authdriver.exists():
+        return True
     else:
         return False 
 
@@ -52,3 +50,8 @@ def sendSMS(unauth_driver): # helper function to send sms
                 from_="+12244343836",
                 to="+961" + unauth_driver.phone_number
             )
+
+
+def is_valid_token(token): #helper function to use in checking the token and authenticating the driver
+    unauth_driver = UnauthDriver.objects.get(pk=token)
+    return unauth_driver

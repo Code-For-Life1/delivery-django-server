@@ -70,10 +70,13 @@ def register_merchant(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def merchant_add_driver(request):
+    data = request.data
+
     if not request.user.is_merchant:
         return JsonResponse({"response" : "The user is not a merchant"}, safe=False, status=status.HTTP_400_BAD_REQUEST)
 
-    data = request.data
+    if check_authdriver(data['phone_number']) or check_unauthdriver(data['phone_number']):
+        return JsonResponse({'response': 'This driver already exists!'},safe=False, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     data['merchant'] = request.user
     unauthdriver_serializer = UnauthDriverSerializer(data=data)
@@ -132,13 +135,11 @@ def resend_sms(request):
     driver = check_unauthdriver(phone_nb)
     if driver == False:
         return JsonResponse({'response': 'Driver has not been added by merchant', 'phone_number': phone_nb}, safe=False, status=status.HTTP_400_BAD_REQUEST)
-    resendSMS(driver[0])
+    resendSMS(UnauthDriver.objects.filter(phone_number=phone_nb).first())
     return JsonResponse({'response': 'SMS has been resent!', 'driver': driver.first().toJSON()}, safe=False, status=status.HTTP_200_OK)
 
 
-def is_valid_token(token): #helper function to use in checking the token and authenticating the driver
-    unauth_driver = UnauthDriver.objects.get(pk=token)
-    return unauth_driver
+
 
     
 
