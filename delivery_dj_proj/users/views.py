@@ -1,7 +1,4 @@
 import io
-import uuid
-import environ
-
 from django.conf.urls import include, url
 from django.core import serializers
 from django.http import JsonResponse
@@ -18,13 +15,10 @@ from .serializers import (MerchantSerializer, UnauthDriverSerializer,
                           UserSerializer)
 
 from rest_framework.authtoken.views import ObtainAuthToken
-from twilio.rest import Client
-from .models import generateOTP
+from .helpers import *
 
 # Twilio authentication
-env = environ.Env()
-environ.Env.read_env()
-twilio_client = Client(env('TWILIO_ACCOUNT_SID'), env('TWILIO_AUTH_TOKEN'))
+
 
 # Create your views here.
 
@@ -70,43 +64,15 @@ def register_merchant(request):
 
     return JsonResponse(user_serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
-def sendSMS(unauth_driver): # helper function to send sms
-    message = twilio_client.messages \
-            .create(
-                body="\nHello " + unauth_driver.first_name + " " + unauth_driver.last_name + \
-                ", here is your sign up token: " + unauth_driver.token,
-                from_="+12244343836",
-                to="+961" + unauth_driver.phone_number
-            )
-
-def resendSMS(unauth_driver): # helper function to resend sms
-    newToken = generateOTP()
-    UnauthDriver.objects.filter(phone_number=unauth_driver.phone_number)\
-        .update(token=newToken)
-    unauth_driver.token = newToken
-    sendSMS(unauth_driver)
-
-def check_unauthdriver(phone_nb): # helper function to find if unauth driver exists
-    unauthdriver = UnauthDriver.objects.filter(phone_number=phone_nb)
-    dictionaries = [driver.as_dict() for driver in unauthdriver]
-    if len(dictionaries) == 1:
-        return unauthdriver
-    else:
-        return False        
-
-def check_authdriver(phone_nb): # helper function to find if auth driver exists
-    authdriver = User.objects.filter(phone_number=phone_nb, is_driver=1)
-    dictionaries = [driver.as_dict() for driver in authdriver]
-    if len(dictionaries) == 1:
-        return authdriver
-    else:
-        return False 
 
 
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def merchant_add_driver(request):
+    if not request.user.is_merchant:
+        return JsonResponse({"response" : "The user is not a merchant"}, safe=False, status=status.HTTP_400_BAD_REQUEST)
+
     data = request.data
 
     data['merchant'] = request.user
@@ -126,6 +92,35 @@ def merchant_add_driver(request):
         return JsonResponse(response,safe=False,status=status.HTTP_201_CREATED)
         
     return JsonResponse(unauthdriver_serializer.errors, safe=False, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+@api_view(['DELETE'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def merchant_delete_driver(request):
+    if not request.user.is_merchant:
+        return JsonResponse({"response" : "The user is not a merchant"}, safe=False, status=status.HTTP_400_BAD_REQUEST)
+
+    data = request.data
+    merchant = request.user
+    phone_number = data['phone_number']
+
+    try:
+        driver_user = get_user_by_phone(phone_number)
+    except:
+        return JsonResponse({"response" : "No driver with this phone_number"}, safe=False, status=status.HTTP_404_NOT_FOUND)
+
+
+    if driver_user.merchant.id != merchant.id:
+        return JsonResponse({"response" : "This driver doesn't belong to this merchant"}, safe=False, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+    driver_user.delete()
+
+    return JsonResponse({"response" : "Driver successfully deleted"}, safe=False, status=status.HTTP_200_OK)
+
+
 
 
 @api_view(['POST'])
@@ -181,18 +176,9 @@ def authenticate_driver(request):
         user = user_serializer.save()
         driver = Driver.objects.create(user=user)
         driver.merchant.add(data['merchant'])
-        
-        response = {}
-        response['response'] = 'successfully registered new driver.'
-        response['first_name'] = unauth_driver.first_name
-        response['last_name'] = unauth_driver.last_name
-        response['phone_number'] = user.phone_number
-        
         token = Token.objects.get(user=user).key #authentication Token
-        response['token'] = token
-
+        response = {**{'response' : 'successfully registered new driver.', 'token' : token}, **unauth_driver.as_dict()}
         unauth_driver.delete()
-
         return JsonResponse(response,safe=False, status=status.HTTP_201_CREATED)
 
     return JsonResponse(user_serializer.errors, safe=False, status=status.HTTP_400_BAD_REQUEST)
