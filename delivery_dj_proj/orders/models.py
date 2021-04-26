@@ -14,7 +14,6 @@ class Order(models.Model):
     receiver_full_name = models.CharField(max_length=60)
     receiver_phone_number = models.CharField(max_length=20)
     is_done = models.BooleanField(default=False)
-    is_recieved = models.BooleanField(default=False) #by driver
     date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, default='Pending')
 
