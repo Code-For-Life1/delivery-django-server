@@ -115,10 +115,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'delivery_app',
-        'USER': 'devappuser',
+        'USER': 'devappuser@365deliveryapp',
         'PASSWORD': 'wecandoit-022',
-        'HOST': '127.0.0.1',   # Or an IP Address that your DB is hosted on
-        'PORT': '3306',
+        'HOST': '365deliveryapp.mysql.database.azure.com',   # Or an IP Address that your DB is hosted on
+        'PORT': '',
     }
 
     # 'default': {
