@@ -82,6 +82,9 @@ def receive_order(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def order_is_done(request, order_id):
+    if not request.user.is_driver:
+        return JsonResponse({"response" : "The user is not a driver"}, safe=False, status=status.HTTP_400_BAD_REQUEST)
+
     if not Order.objects.filter(pk=order_id).exists():
         return JsonResponse({"response" : "Invalid order"}, safe=False, status=status.HTTP_400_BAD_REQUEST)
 
@@ -92,3 +95,67 @@ def order_is_done(request, order_id):
     devices.send_message(title="Order is done!", body= user.first_name + " delivered the order")
 
     return JsonResponse({"response" : "Order is done"}, safe=False, status=status.HTTP_200_OK)
+
+
+def is_authorized(user,order_id):
+    if not user.is_merchant:
+        return JsonResponse({"response" : "The user is not a merchant"}, safe=False, status=status.HTTP_400_BAD_REQUEST)
+
+    if not Order.objects.filter(pk=order_id).exists():
+        return JsonResponse({"response" : "Invalid order"}, safe=False, status=status.HTTP_400_BAD_REQUEST)
+
+    order = Order.objects.filter(pk=order_id).first()
+    if user.id != order.merchant.user.id:
+        return JsonResponse({"response" : "This order is not assigned by this merchant"}, safe=False, status=status.HTTP_400_BAD_REQUEST)
+    
+    return True
+
+
+
+@api_view(['PUT'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def update_order(request, order_id):
+    authorized = is_authorized(request.user, order_id)
+    if authorized != True:
+        return authorized
+
+    order = Order.objects.filter(pk=order_id).first()
+
+
+    data = request.data
+    data['merchant'] = order.merchant
+    data['driver'] = get_user_by_phone(data['driver'])
+
+    order_serializer = OrderSerializer(order, data=request.data)
+    if order_serializer.is_valid():
+        updated_order = order_serializer.save()
+
+        response = {**{"response" : "Order successfully updated"}, **updated_order.as_dict()}
+        user = updated_order.driver.user
+        devices = FCMDevice.objects.filter(user=user.id, active=True)
+        devices.send_message(title="Order " + str(updated_order.id) + " is updated", body= "Check the updated order!")
+        return JsonResponse(response, safe=False, status=status.HTTP_200_OK)
+
+    return JsonResponse(order_serializer.errors, safe=False, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+
+
+@api_view(['DELETE'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def delete_order(request, order_id):
+    authorized = is_authorized(request.user, order_id)
+    if authorized != True:
+        return authorized
+
+    order = Order.objects.filter(pk=order_id).first()
+
+    user = order.driver.user
+
+    order.delete()
+    devices = FCMDevice.objects.filter(user=user.id, active=True)
+    devices.send_message(title="Order " + str(order.id) + " is deleted", body= "Check your assigned orders!")
+    return JsonResponse({"response" : "Order successfully deleted"}, safe=False, status=status.HTTP_200_OK)
+
+    
