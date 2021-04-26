@@ -80,12 +80,7 @@ class UnauthDriver(models.Model):
     def __str__(self):
         return str(self.token)
 
-    def toJSON(self):
-        return {
-            'first_name': self.first_name,
-            'last_name' : self.last_name,
-            'phone_number' : self.phone_number
-        }
+
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
