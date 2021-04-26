@@ -104,7 +104,7 @@ def merchant_delete_driver(request):
         return JsonResponse({"response" : "The user is not a merchant"}, safe=False, status=status.HTTP_400_BAD_REQUEST)
 
     data = request.data
-    merchant = request.user
+    merchant_user = request.user
     phone_number = data['phone_number']
 
     try:
@@ -112,8 +112,8 @@ def merchant_delete_driver(request):
     except:
         return JsonResponse({"response" : "No driver with this phone_number"}, safe=False, status=status.HTTP_404_NOT_FOUND)
 
-
-    if driver_user.merchant.id != merchant.id:
+    driver = Driver.objects.get(user=driver_user)
+    if Merchant.objects.get(driver=driver).user != merchant_user:
         return JsonResponse({"response" : "This driver doesn't belong to this merchant"}, safe=False, status=status.HTTP_406_NOT_ACCEPTABLE)
 
     driver_user.delete()
