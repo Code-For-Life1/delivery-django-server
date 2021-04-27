@@ -152,10 +152,10 @@ def delete_order(request, order_id):
     order = Order.objects.filter(pk=order_id).first()
 
     user = order.driver.user
-
+    order_id = order.id
     order.delete()
     devices = FCMDevice.objects.filter(user=user.id, active=True)
-    devices.send_message(title="Order " + str(order.id) + " is deleted", body= "Check your assigned orders!")
+    devices.send_message(title="Order " + str(order_id) + " is deleted", body= "Check your assigned orders!")
     return JsonResponse({"response" : "Order successfully deleted"}, safe=False, status=status.HTTP_200_OK)
 
     
