@@ -113,24 +113,12 @@ WSGI_APPLICATION = 'delivery_dj_proj.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ['DB_SCHEMA'], #delivery_app
-        'USER': os.environ['DB_USER'],#'devappuser@365deliveryapp'
-        'PASSWORD': os.environ['DB_USER_PASS'],#'wecandoit-022'
-        'HOST': os.environ['DB_HOST'],   # 365deliveryapp.mysql.database.azure.com Or an IP Address that your DB is hosted on
+        'NAME': os.environ['DB_SCHEMA'], 
+        'USER': os.environ['DB_USER'],
+        'PASSWORD': os.environ['DB_USER_PASS'],
+        'HOST': os.environ['DB_HOST'],   
         'PORT': '',
     }
-
-    # 'default': {
-    #     'ENGINE': 'sql_server.pyodbc',
-    #     'NAME': 'adventureworks',
-    #     'USER': 'mbdeir',
-    #     'PASSWORD': '!!Cmps253!!',
-    #     'HOST': 'cmps.database.windows.net',
-    #     'PORT': '',
-    #     'OPTIONS': {
-    #         'driver': 'ODBC Driver 17 for SQL Server',
-    #         'schema': 'proj-12-delivery-app',
-    # },
 }
 
 
