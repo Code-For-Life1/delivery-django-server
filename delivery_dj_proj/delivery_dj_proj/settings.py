@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,12 +20,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '1l2dr(8zf2z3_z%ixq8wrr9%do!l6t7&(*71$9a(7p!e1^fn(w'
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['aa19160b0ab7.ngrok.io',  '127.0.0.1', '365delivery.azurewebsites.net']
+ALLOWED_HOSTS = [os.environ['WEBSITE_HOSTNAME']] if 'WEBSITE_HOSTNAME' in os.environ else []
 
 
 # Application definition
@@ -45,14 +45,13 @@ INSTALLED_APPS = [
 ]
 
 # FCM API key
-import environ
-env = environ.Env()
-environ.Env.read_env()
+
+
 
 FCM_DJANGO_SETTINGS = {
 
          # Your firebase API KEY
-        "FCM_SERVER_KEY": env('fcmApiKey'),
+        "FCM_SERVER_KEY": os.environ['FCM_API_KEY'],
          # true if you want to have only one active device per registered user at a time
          # default: False
         "ONE_DEVICE_PER_USER": True,
@@ -114,10 +113,10 @@ WSGI_APPLICATION = 'delivery_dj_proj.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'delivery_app',
-        'USER': 'devappuser@365deliveryapp',
-        'PASSWORD': 'wecandoit-022',
-        'HOST': '365deliveryapp.mysql.database.azure.com',   # Or an IP Address that your DB is hosted on
+        'NAME': os.environ['DB_SCHEMA'], #delivery_app
+        'USER': os.environ['DB_USER'],#'devappuser@365deliveryapp'
+        'PASSWORD': os.environ['DB_USER_PASS'],#'wecandoit-022'
+        'HOST': os.environ['DB_HOST'],   # 365deliveryapp.mysql.database.azure.com Or an IP Address that your DB is hosted on
         'PORT': '',
     }
 
@@ -166,6 +165,7 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
 
 
 # Static files (CSS, JavaScript, Images)

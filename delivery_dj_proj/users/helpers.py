@@ -2,13 +2,12 @@ from .models import User, UnauthDriver
 from .models import generateOTP
 import environ
 from twilio.rest import Client
+import os
 
 
 
 
-env = environ.Env()
-environ.Env.read_env()
-twilio_client = Client(env('TWILIO_ACCOUNT_SID'), env('TWILIO_AUTH_TOKEN'))
+twilio_client = Client(os.environ['TWILIO_ACCOUNT_SID'], os.environ['TWILIO_AUTH_TOKEN'])
 
 def get_user_by_phone(phone_number):
     return User.objects.get(phone_number=phone_number)
