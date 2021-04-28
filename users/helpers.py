@@ -32,9 +32,9 @@ def check_unauthdriver(phone_nb): # helper function to find if unauth driver exi
 
 
 
-def check_authdriver(phone_nb): # helper function to find if auth driver exists
-    authdriver = User.objects.filter(phone_number=phone_nb, is_driver=1)
-    if authdriver.exists():
+def check_user(phone_nb): # helper function to find if auth driver exists
+    user = User.objects.filter(phone_number=phone_nb)
+    if user.exists():
         return True
     else:
         return False 

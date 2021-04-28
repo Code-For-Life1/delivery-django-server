@@ -75,8 +75,8 @@ def merchant_add_driver(request):
     if not request.user.is_merchant:
         return JsonResponse({"response" : "The user is not a merchant"}, safe=False, status=status.HTTP_400_BAD_REQUEST)
 
-    if check_authdriver(data['phone_number']) or check_unauthdriver(data['phone_number']):
-        return JsonResponse({'response': 'This driver already exists!'},safe=False, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    if check_user(data['phone_number']) or check_unauthdriver(data['phone_number']):
+        return JsonResponse({'response': 'This user already exists!'},safe=False, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     data['merchant'] = request.user
     unauthdriver_serializer = UnauthDriverSerializer(data=data)
@@ -119,7 +119,8 @@ def merchant_delete_driver(request):
     if Merchant.objects.get(driver=driver).user != merchant_user:
         return JsonResponse({"response" : "This driver doesn't belong to this merchant"}, safe=False, status=status.HTTP_406_NOT_ACCEPTABLE)
 
-    driver_user.delete()
+    driver_user.is_active = False
+    driver_user.save()
 
     return JsonResponse({"response" : "Driver successfully deleted"}, safe=False, status=status.HTTP_200_OK)
 
