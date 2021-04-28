@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 import math
 import random
 import json
@@ -58,7 +58,7 @@ def generateOTP() :
     OTP = ""
     length = len(string)
     for i in range(6) :
-        random.seed(datetime.now())
+        random.seed(datetime.time)
         OTP += string[math.floor(random.random() * length)]
   
     return OTP
