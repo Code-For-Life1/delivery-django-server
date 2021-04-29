@@ -195,6 +195,7 @@ def send_drivers(request):
         return JsonResponse({"response" : "The user is not a merchant"}, safe=False, status=status.HTTP_400_BAD_REQUEST)
 
     merch_id = request.user.id
-    drivers = Driver.objects.filter(merchant=merch_id)
+    users = User.objects.filter(is_driver=True, is_active=True)
+    drivers = Driver.objects.filter(merchant=merch_id, user__in=users)
     dictionaries = [driver.as_dict() for driver in drivers]
     return JsonResponse(dictionaries,safe=False, status=status.HTTP_200_OK)
